@@ -1,6 +1,5 @@
 import calendar
 from datetime import date, timedelta
-from numba import njit
 
 today = date.today()
 

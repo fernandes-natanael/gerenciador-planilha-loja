@@ -1,7 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
 from settings import *
-from numba import njit
 
 from utils import *
 
@@ -10,7 +9,6 @@ def format_price(valor):
     valor = str(valor // 100)
     return  valor + "." + decimal
 
-# @njit
 def sanitize_price(price):
     price = str(price)
     if  not '.' in price:
@@ -23,7 +21,6 @@ def sanitize_price(price):
     
     return int(price.replace('.', ''))
 
-# @njit
 def sanitize(data):
     for sell in data:   
         sell[sell_price_col] = sanitize_price(sell[sell_price_col])                
