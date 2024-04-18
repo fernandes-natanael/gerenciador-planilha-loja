@@ -3,6 +3,10 @@ from google.oauth2.service_account import Credentials
 from data_manipulation import *
 from dotenv import load_dotenv
 import os
+import pandas as pd
+from settings import *
+from collections import defaultdict
+
 
 load_dotenv()
 
@@ -25,27 +29,53 @@ creds = Credentials.from_service_account_info({
 
 client = gspread.authorize(creds)
 
-sheet_id = '1HszlIyHxuDFCYcWPmKqPQmL2JXTWSZz-8vUwN5AvR38'
-workspace = client.open_by_key(sheet_id)
+workspace = client.open_by_key(os.getenv("SHEETS_ID"))
 
-worksheet = workspace.sheet1 # sheet where all data are save
+input_sheet = workspace.sheet1 # sheet where all data are save
+goals_sheet = workspace.get_worksheet(1) # sheet where all goals 
+processed_data_sheet = workspace.get_worksheet(2)
 
-sells = worksheet.get_all_records()
+sells = input_sheet.get_all_records()
+goals = goals_sheet.get_all_records()
 
-sells = sanitize(sells)
 
-sells_per_seller = get_sellers_info(sells)
+inputs_df = pd.DataFrame(sells)
+inputs_df[sell_date_col] = pd.to_datetime(inputs_df[sell_date_col], format='%d/%m/%Y')
+inputs_df[sell_date_col] = inputs_df[sell_date_col].dt.date
+inputs_df[sell_price_col] = pd.to_numeric(inputs_df[sell_price_col])
 
-for seller, info in sells_per_seller.items():
-    print(f'Seller {seller}:\n\tthis_week: {info["this_week"]}\n\tthis_month: {info["this_month"]}\n\tthis_year: {info["this_year"]}')
+week_first, week_last = get_week_info()
+month_first, month_last = get_month_info()
+year_first, year_last = get_year_info()
+
+inputs_df_this_week = inputs_df[(inputs_df[sell_date_col] >= week_first) & (inputs_df[sell_date_col] <= week_last)]
+inputs_df_this_month = inputs_df[(inputs_df[sell_date_col] >= month_first) & (inputs_df[sell_date_col] <= month_last)] 
+inputs_df_this_year = inputs_df[(inputs_df[sell_date_col] >= year_first) & (inputs_df[sell_date_col] <= year_last)]
+
+def sum_sells(dataframe, period):
+    dataframe = dataframe.groupby(seller_col)[sell_price_col].sum()
+    dataframe = dataframe.reset_index()
+    dataframe = dataframe.rename(columns={sell_price_col:period})
+    return dataframe
     
-update_workspace = workspace.get_worksheet(1)
-update_workspace.clear()
+weekly_sales = sum_sells(inputs_df_this_week, week_value_col)
+monthly_sales = sum_sells(inputs_df_this_month, month_value_col)
+yearly_sales = sum_sells(inputs_df_this_year, year_value_col)
 
-update_workspace.append_rows([['Vendedor(a)', 'Semana', 'Mês', 'Ano']])
+goals_df = pd.DataFrame(goals)
+goals_df[goal_col] = pd.to_numeric(goals_df[goal_col])
 
-# It can be better, but it works
-# And for now it will only show 2 sellers, so it's ok 
-for seller, info in sells_per_seller.items():
-    print(seller, format_price(info['this_week']), format_price(info['this_month']), format_price(info['this_year']))
-    update_workspace.append_rows([[seller, format_price(info['this_week']), format_price(info['this_month']), format_price(info['this_year'])]])
+goals_df[sells_per_day_col] = goals_df[goal_col] / (goals_df[work_days_col]*4)
+goals_df[sells_per_week_col] = goals_df[goal_col] / 4
+goals_df[percent_sells_per_goal_col] = (monthly_sales[month_value_col] / goals_df[goal_col])*100
+goals_df.drop(columns=[seller_col, work_days_col], inplace=True)
+
+goals_df.rename(columns={goal_col:'Meta Atual', sells_per_day_col:'Meta por dia', sells_per_week_col:'Meta por semana'}, inplace=True)
+
+print(goals_df)
+combined_sales = pd.concat([weekly_sales, monthly_sales[month_value_col], yearly_sales[year_value_col], goals_df], axis=1)
+print(combined_sales)
+
+data = combined_sales.values.tolist()
+processed_data_sheet.clear()
+processed_data_sheet.update([combined_sales.columns.values.tolist()] + data)
