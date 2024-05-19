@@ -2,38 +2,17 @@ import gspread
 from google.oauth2.service_account import Credentials
 from data_manipulation import *
 from dotenv import load_dotenv
-import os
 import pandas as pd
 from settings import *
+from google_spreedsheets import *
 from collections import defaultdict
-
-
 load_dotenv()
 
-scopes = [
-    "https://www.googleapis.com/auth/spreadsheets",
-]
+workspace = get_workspace()
 
-creds = Credentials.from_service_account_info({
-  "type": os.getenv("SERVICE_ACCOUNT_TYPE"),
-  "project_id": os.getenv("PROJECT_ID"),
-  "private_key_id": os.getenv("PRIVATE_KEY_ID"),
-  "private_key": os.getenv("PRIVATE_KEY"),
-  "client_email": os.getenv("CLIENT_EMAIL"),
-  "client_id": os.getenv("CLIENT_ID"),
-  "auth_uri": os.getenv("AUTH_URI"),
-  "token_uri": os.getenv("TOKEN_URI"),
-  "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_CERT_URL"),
-  "client_x509_cert_url": os.getenv("CLIENT_CERT_URL")
-}, scopes=scopes)
-
-client = gspread.authorize(creds)
-
-workspace = client.open_by_key(os.getenv("SHEETS_ID"))
-
-input_sheet = workspace.sheet1 # sheet where all data are save
+input_sheet = workspace.get_worksheet(2) # sheet where all data are save
 goals_sheet = workspace.get_worksheet(1) # sheet where all goals 
-processed_data_sheet = workspace.get_worksheet(2)
+processed_data_sheet = workspace.get_worksheet(0)
 
 sells = input_sheet.get_all_records()
 goals = goals_sheet.get_all_records()
@@ -70,10 +49,29 @@ goals_df[sells_per_week_col] = goals_df[goal_col] / 4
 goals_df[percent_sells_per_goal_col] = (monthly_sales[month_value_col] / goals_df[goal_col])*100
 goals_df.drop(columns=[seller_col, work_days_col], inplace=True)
 
-goals_df.rename(columns={goal_col:'Meta Atual', sells_per_day_col:'Meta por dia', sells_per_week_col:'Meta por semana'}, inplace=True)
-
 print(goals_df)
 combined_sales = pd.concat([weekly_sales, monthly_sales[month_value_col], yearly_sales[year_value_col], goals_df], axis=1)
+
+combined_sales.rename(columns={
+    goal_col:goal_treated_month_col, 
+    sells_per_day_col:goal_treated_day_col, 
+    sells_per_week_col:goal_treated_week_col
+    }, inplace=True)
+
+
+money_columns = [ week_value_col, month_value_col, year_value_col, goal_treated_day_col, goal_treated_week_col, goal_treated_month_col]
+
+def format_money(value):
+    return f'R$ {value:,.2f}'
+
+def format_percent(value):
+    return f'{value:,.2f}%'
+
+for col in money_columns:
+    combined_sales[col] = combined_sales[col].apply(format_money)
+
+combined_sales[percent_sells_per_goal_col] = combined_sales[percent_sells_per_goal_col].apply(format_percent)	
+
 print(combined_sales)
 
 data = combined_sales.values.tolist()
