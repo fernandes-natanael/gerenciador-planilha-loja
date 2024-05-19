@@ -1,0 +1,26 @@
+name: Update Sheet
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  # schedule:
+  #   - cron: '*/30 * * * *'
+
+jobs:
+  call-update-sheets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine environment
+        id: determine-env
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            echo "env=production" >> $GITHUB_ENV
+          else
+            echo "env=develop" >> $GITHUB_ENV
+
+      - name: Call reusable workflow
+        uses: ./.github/workflows/update-sheets.yml
+        with:
+          environment: ${{ env.env }}
