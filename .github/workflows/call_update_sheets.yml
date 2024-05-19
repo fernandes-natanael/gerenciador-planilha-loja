@@ -15,7 +15,7 @@ jobs:
       - name: Determine environment
         id: determine-env
         run: |
-          if [ "${{ github.ref_name }}" = "main" ]; then
+          if [ "${{ github.ref_name }}" = "dev" ]; then
             echo "env=production" >> $GITHUB_ENV
           else
             echo "env=develop" >> $GITHUB_ENV
@@ -25,6 +25,6 @@ jobs:
         run: echo ${{ env.env }}
 
       - name: Call reusable workflow
-        uses: ./.github/workflows/update-sheets.yml
+        uses: ./.github/workflows/reuse/update-sheets.yml
         with:
           environment: ${{ env.env }}
