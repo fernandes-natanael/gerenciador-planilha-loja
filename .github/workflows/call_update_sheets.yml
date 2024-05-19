@@ -15,11 +15,11 @@ jobs:
       - name: Determine environment
         id: determine-env
         run: |
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [ "${{ github.ref_name }}" = "main" ]; then
             echo "env=production" >> $GITHUB_ENV
           else
             echo "env=develop" >> $GITHUB_ENV
-            
+
       - name: Print env name
         run: echo ${{ env.env }}
 
