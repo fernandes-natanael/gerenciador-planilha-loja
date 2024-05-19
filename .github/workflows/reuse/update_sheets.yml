@@ -15,7 +15,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
+      
+      - name: Setup Environment Variables
+        env:
+          SERVICE_ACCOUNT_TYPE: {secrets.SERVICE_ACCOUNT_TYPE}
+          PROJECT_ID: {secrets.PROJECT_ID}
+          PRIVATE_KEY_ID: {secrets.PRIVATE_KEY_ID}
+          PRIVATE_KEY: {secrets.PRIVATE_KEY}
+          CLIENT_EMAIL: {secrets.CLIENT_EMAIL}
+          CLIENT_ID: {secrets.CLIENT_ID}
+          AUTH_URI: {secrets.AUTH_URI}
+          TOKEN_URI: {secrets.TOKEN_URI}
+          AUTH_PROVIDER_CERT_URL: {secrets.AUTH_PROVIDER_CERT_URL}
+          CLIENT_CERT_URL: {secrets.CLIENT_CERT_URL}
+          UNIVERSE_DOMAIN: {secrets.UNIVERSE_DOMAIN}
+          SHEETS_ID: {secrets.SHEETS_ID}
       - name: Set up Python 3.11.3
         uses: actions/setup-python@v2
         with:
