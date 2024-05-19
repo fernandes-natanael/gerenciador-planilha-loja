@@ -19,6 +19,7 @@ jobs:
             echo "env=production" >> $GITHUB_ENV
           else
             echo "env=develop" >> $GITHUB_ENV
+          fi
 
       - name: Print env name
         run: echo ${{ env.env }}
