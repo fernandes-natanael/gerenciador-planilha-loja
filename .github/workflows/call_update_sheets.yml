@@ -9,25 +9,7 @@ on:
   #   - cron: '*/30 * * * *'
 
 jobs:
-  call-update-sheets:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Determine environment
-        id: determine-env
-        run: |
-          if [ "${{ github.ref_name }}" = "dev" ]; then
-            echo "env=production" >> $GITHUB_ENV
-          else
-            echo "env=develop" >> $GITHUB_ENV
-          fi
-
-      - name: Print env name
-        run: echo ${{ env.env }}
-
-      - name: Call reusable workflow
-        uses: ./.github/workflows/reuse/update-sheets.yml
-        with:
-          environment: ${{ env.env }}
+  update-sheets:
+    uses: ./.github/workflows/reuse/update-sheets.yml
+    with:
+      branch_name: ${{ github.ref_name }}
