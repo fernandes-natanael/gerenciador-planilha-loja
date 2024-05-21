@@ -6,9 +6,6 @@ from pandas_manipulation import *
 from utils import *
 load_dotenv()
 
-import os
-
-
 workspace = get_workspace()
 [processed_data_sheet, goals_sheet, data_sheet, temp_sheet] = get_worksheets(workspace)
 logger(get_worksheets(workspace)) 

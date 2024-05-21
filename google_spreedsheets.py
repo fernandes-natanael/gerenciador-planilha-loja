@@ -3,6 +3,9 @@ import os
 import gspread
 from credentials import *
 from settings import *
+from dotenv import load_dotenv
+load_dotenv()
+
 
 
 def get_client():
