@@ -6,6 +6,16 @@ from pandas_manipulation import *
 from utils import *
 load_dotenv()
 
+import os
+
+# Load environment variables
+env_vars = os.environ
+
+# Print all environment variable names and their values
+for key, value in env_vars.items():
+    print(f"{key}: {value}")
+
+
 workspace = get_workspace()
 [processed_data_sheet, goals_sheet, data_sheet, temp_sheet] = get_worksheets(workspace)
 logger(get_worksheets(workspace)) 
