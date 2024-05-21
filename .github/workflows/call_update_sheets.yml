@@ -10,9 +10,9 @@ on:
 
 jobs:
   update_sheets:
-    name: Updating Sheets for ${{ inputs.branch_name }} Environment
+    name: Updating Sheets for ${{ github.ref_name }} Environment
     runs-on: ubuntu-latest
-    environment : input.branch_name
+    environment : ${{github.ref_name}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
       - name: Setup environment
         id: determine-env
         run: |
-          if [ "${{ inputs.branch_name }}" = "main" ]; then
+          if [ "${{ github.ref_name }}" = "main" ]; then
             echo "env=production" >> $GITHUB_ENV
           else
             echo "env=develop" >> $GITHUB_ENV
@@ -29,6 +29,7 @@ jobs:
       - name: Print environment name
         run: echo ${{ env.env }}
         env:
+          CHECKER_VARIABLE: ${{secrets.CHECKER_VARIABLE}}
           SERVICE_ACCOUNT_TYPE: ${{secrets.SERVICE_ACCOUNT_TYPE}}
           PROJECT_ID: ${{secrets.PROJECT_ID}}
           PRIVATE_KEY_ID: ${{secrets.PRIVATE_KEY_ID}}
