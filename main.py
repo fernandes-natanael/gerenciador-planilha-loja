@@ -1,9 +1,9 @@
-from dotenv import load_dotenv
 from log import logger
 from settings import *
 from google_spreedsheets import *
 from pandas_manipulation import *
 from utils import *
+from dotenv import load_dotenv
 load_dotenv()
 
 workspace = get_workspace()
