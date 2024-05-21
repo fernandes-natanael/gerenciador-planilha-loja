@@ -12,5 +12,4 @@ def get_client():
 
 def get_workspace():
     client = get_client()
-    
     return client.open_by_key(os.getenv("SHEETS_ID"))

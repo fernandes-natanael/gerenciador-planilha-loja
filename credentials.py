@@ -1,5 +1,11 @@
+import os
+from google.oauth2.service_account import Credentials
+
 def get_credentials():
-    return Credentials.from_service_account_info({
+  scopes = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    ]
+  return Credentials.from_service_account_info({
       "type": os.getenv("SERVICE_ACCOUNT_TYPE"),
       "project_id": os.getenv("PROJECT_ID"),
       "private_key_id": os.getenv("PRIVATE_KEY_ID"),
