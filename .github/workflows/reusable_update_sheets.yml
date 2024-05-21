@@ -1,4 +1,4 @@
-name: Update Sheet ENV
+name: Update Sheet
 
 on:
   workflow_call:
@@ -9,25 +9,21 @@ on:
 
 jobs:
   update_sheets:
-    name: Updating Sheets for ${{ input.branch_name }}
+    name: Updating Sheets for ${{ inputs.branch_name }}
     runs-on: ubuntu-latest
     environment : input.branch_name
     steps:
-      - name: Determine environment
+      - name: Setup environment
         id: determine-env
         run: |
-          if [ "${{ input.branch_name }}" = "main" ]; then
+          if [ "${{ inputs.branch_name }}" = "main" ]; then
             echo "env=production" >> $GITHUB_ENV
           else
             echo "env=develop" >> $GITHUB_ENV
           fi
+        
       - name: Print environment name
         run: echo ${{ env.env }}
-
-      - name: Checkout repository
-        uses: actions/checkout@v2
-       
-      - name: Setup Environment Variables
         env:
           SERVICE_ACCOUNT_TYPE: {secrets.SERVICE_ACCOUNT_TYPE}
           PROJECT_ID: {secrets.PROJECT_ID}
@@ -41,6 +37,12 @@ jobs:
           CLIENT_CERT_URL: {secrets.CLIENT_CERT_URL}
           UNIVERSE_DOMAIN: {secrets.UNIVERSE_DOMAIN}
           SHEETS_ID: {secrets.SHEETS_ID}
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+       
+      - name: Setup Environment Variables
+        
         run: echo ${{ env.env }}
           
       - name: Set up Python 3.11.3
