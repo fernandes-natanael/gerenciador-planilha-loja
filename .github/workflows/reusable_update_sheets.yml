@@ -1,4 +1,4 @@
-name: Update Sheet ${{ github.ref }} ENV
+name: Update Sheet ENV
 
 on:
   workflow_call:
@@ -41,6 +41,7 @@ jobs:
           CLIENT_CERT_URL: {secrets.CLIENT_CERT_URL}
           UNIVERSE_DOMAIN: {secrets.UNIVERSE_DOMAIN}
           SHEETS_ID: {secrets.SHEETS_ID}
+        run: echo ${{ env.env }}
           
       - name: Set up Python 3.11.3
         uses: actions/setup-python@v2
