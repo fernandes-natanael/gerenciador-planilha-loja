@@ -11,21 +11,20 @@ jobs:
   update_sheets:
     name: Updating Sheets for ${{ github.ref_name }} Environment
     runs-on: ubuntu-latest
-    environment: dev
     env:
       CHECKER_VARIABLE: ${{vars.CHECKER_VARIABLE}}
-      SERVICE_ACCOUNT_TYPE: ${{secrets.SERVICE_ACCOUNT_TYPE}}
-      PROJECT_ID: ${{secrets.PROJECT_ID}}
-      PRIVATE_KEY_ID: ${{secrets.PRIVATE_KEY_ID}}
-      PRIVATE_KEY: ${{secrets.PRIVATE_KEY}}
-      CLIENT_EMAIL: ${{secrets.CLIENT_EMAIL}}
-      CLIENT_ID: ${{secrets.CLIENT_ID}}
-      AUTH_URI: ${{secrets.AUTH_URI}}
-      TOKEN_URI: ${{secrets.TOKEN_URI}}
-      AUTH_PROVIDER_CERT_URL: ${{secrets.AUTH_PROVIDER_CERT_URL}}
-      CLIENT_CERT_URL: ${{secrets.CLIENT_CERT_URL}}
-      UNIVERSE_DOMAIN: ${{secrets.UNIVERSE_DOMAIN}}
-      SHEETS_ID: ${{secrets.SHEETS_ID}}
+      SERVICE_ACCOUNT_TYPE: ${{vars.SERVICE_ACCOUNT_TYPE}}
+      PROJECT_ID: ${{vars.PROJECT_ID}}
+      PRIVATE_KEY_ID: ${{vars.PRIVATE_KEY_ID}}
+      PRIVATE_KEY: ${{vars.PRIVATE_KEY}}
+      CLIENT_EMAIL: ${{vars.CLIENT_EMAIL}}
+      CLIENT_ID: ${{vars.CLIENT_ID}}
+      AUTH_URI: ${{vars.AUTH_URI}}
+      TOKEN_URI: ${{vars.TOKEN_URI}}
+      AUTH_PROVIDER_CERT_URL: ${{vars.AUTH_PROVIDER_CERT_URL}}
+      CLIENT_CERT_URL: ${{vars.CLIENT_CERT_URL}}
+      UNIVERSE_DOMAIN: ${{vars.UNIVERSE_DOMAIN}}
+      SHEETS_ID: ${{vars.SHEETS_ID}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
