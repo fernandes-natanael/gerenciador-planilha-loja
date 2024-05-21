@@ -4,9 +4,6 @@ from credentials import *
 
 
 def get_client():
-    scopes = [
-    "https://www.googleapis.com/auth/spreadsheets",
-    ]
     creds = get_credentials()
     return gspread.authorize(creds)
 
