@@ -18,6 +18,9 @@ jobs:
 
       - name: Create JSON Credentials
         run: echo "${{secrets.JSON_CREDENTIALS}}" > credentials.json
+      
+      - name: Ls directory
+        run: ls
           
       - name: Set up Python 3.11.3
         uses: actions/setup-python@v2
