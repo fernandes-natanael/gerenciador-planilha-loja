@@ -4,20 +4,20 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '*/15 * * * *'
+  # schedule:
+    # - cron: '*/15 * * * *'
 
 jobs:
   update_sheets:
     name: Updating Sheets for ${{ github.ref_name }} Environment
     runs-on: ubuntu-latest
-    environment: production
+    environment: develop
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Create JSON Credentials
-        run: echo "{${{ secrets.JSON_CREDENTIALS}}" > credentials.json
+        run: echo "${{ secrets.JSON_CREDENTIALS}}" > credentials.json
       
       - name: Ls directory
         run: |
