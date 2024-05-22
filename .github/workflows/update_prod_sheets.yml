@@ -11,7 +11,7 @@ jobs:
   update_sheets:
     name: Updating Sheets for Production Environment
     runs-on: ubuntu-latest
-    environment: production
+    environment: vars.ENV
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
         run: echo "${{ secrets.JSON_CREDENTIALS}}" > credentials.json
       
       - name: Create DOTENV
-        run: echo "${{ secrets.DOTENV}}" > .env
+        run: echo "${{ secrets.DOTENV }}" > .env
 
       - name: Show Dir files
         run: |
