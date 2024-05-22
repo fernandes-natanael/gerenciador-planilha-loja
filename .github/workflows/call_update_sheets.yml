@@ -19,11 +19,12 @@ jobs:
       - name: Create JSON Credentials
         run: echo "${{ secrets.JSON_CREDENTIALS}}" > credentials.json
       
+      - name: Create DOTENV
+        run: echo "${{ secrets.DOTENV}}" > .env
+
       - name: Ls directory
         run: |
           ls
-          cat credentials.json
-          
 
       - name: Set up Python 3.11.3
         uses: actions/setup-python@v2
