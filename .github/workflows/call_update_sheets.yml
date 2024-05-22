@@ -20,8 +20,11 @@ jobs:
         run: echo "${{secrets.JSON_CREDENTIALS}}" > credentials.json
       
       - name: Ls directory
-        run: ls
+        run: |
+          ls
+          cat credentials.json
           
+
       - name: Set up Python 3.11.3
         uses: actions/setup-python@v2
         with:
