@@ -11,7 +11,7 @@ jobs:
   update_sheets:
     name: Updating Sheets for Production Environment
     runs-on: ubuntu-latest
-    environment: vars.ENV
+    environment: ${{vars.ENV}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
