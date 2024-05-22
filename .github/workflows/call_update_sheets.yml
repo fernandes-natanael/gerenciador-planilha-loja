@@ -11,23 +11,13 @@ jobs:
   update_sheets:
     name: Updating Sheets for ${{ github.ref_name }} Environment
     runs-on: ubuntu-latest
-    env:
-      CHECKER_VARIABLE: ${{vars.CHECKER_VARIABLE}}
-      SERVICE_ACCOUNT_TYPE: ${{vars.SERVICE_ACCOUNT_TYPE}}
-      PROJECT_ID: ${{vars.PROJECT_ID}}
-      PRIVATE_KEY_ID: ${{vars.PRIVATE_KEY_ID}}
-      PRIVATE_KEY: ${{vars.PRIVATE_KEY}}
-      CLIENT_EMAIL: ${{vars.CLIENT_EMAIL}}
-      CLIENT_ID: ${{vars.CLIENT_ID}}
-      AUTH_URI: ${{vars.AUTH_URI}}
-      TOKEN_URI: ${{vars.TOKEN_URI}}
-      AUTH_PROVIDER_CERT_URL: ${{vars.AUTH_PROVIDER_CERT_URL}}
-      CLIENT_CERT_URL: ${{vars.CLIENT_CERT_URL}}
-      UNIVERSE_DOMAIN: ${{vars.UNIVERSE_DOMAIN}}
-      SHEETS_ID: ${{vars.SHEETS_ID}}
+    environment: production
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      - name: Create JSON Credentials
+        run: echo "${{secrets.JSON_CREDENTIALS}}" > credentials.json
           
       - name: Set up Python 3.11.3
         uses: actions/setup-python@v2
